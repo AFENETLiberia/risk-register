@@ -7,7 +7,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
 <style>
   :root {
     --primary: #1a3a5c;
@@ -372,8 +371,13 @@
     <!-- RESOURCES TAB -->
     <div id="tab-resources" class="tab-content">
       <div class="card" id="resourceUploadCard" style="display:none">
-        <div class="card-title">⬆️ Upload a Resource</div>
+        <div class="card-title">➕ Add a Resource</div>
         <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:14px;">Share guidelines, SOPs, templates and examples to help countries write clear, measurable risks (events, causes, consequences, KPIs, treatment plans).</p>
+        <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:14px;line-height:1.5;background:#f5f8fc;border-left:3px solid var(--accent);padding:10px 14px;border-radius:6px;">
+          <strong>How to add a file:</strong> upload the document to the
+          <a href="https://github.com/AFENETLiberia/risk-register" target="_blank" rel="noopener">AFENETLiberia/risk-register</a>
+          GitHub repo (e.g. into a <code>resources</code> folder) via "Add file → Upload files", then open that file on GitHub, click "Raw" (or right-click "Download" → Copy Link), and paste that link below.
+        </p>
         <div class="entry-grid">
           <div class="input-group"><label>Title</label><input type="text" id="resTitle" placeholder="e.g. Guidance on Writing Measurable KPIs" /></div>
           <div class="input-group">
@@ -388,11 +392,11 @@
             </select>
           </div>
           <div class="input-group" style="grid-column:1 / -1"><label>Description</label><textarea id="resDescription" rows="2" placeholder="Short description of what this document covers…"></textarea></div>
-          <div class="input-group" style="grid-column:1 / -1"><label>File</label><input type="file" id="resFile" /></div>
+          <div class="input-group" style="grid-column:1 / -1"><label>File Link (GitHub URL)</label><input type="url" id="resUrl" placeholder="https://raw.githubusercontent.com/AFENETLiberia/risk-register/main/resources/your-file.pdf" /></div>
+          <div class="input-group" style="grid-column:1 / -1"><label>File Name (shown to users)</label><input type="text" id="resFileName" placeholder="e.g. KPI-Guidance.pdf" /></div>
         </div>
-        <button class="btn-save" onclick="uploadResource()">⬆️ Upload</button>
-        <span class="save-msg" id="resUploadMsg">✓ Uploaded</span>
-        <div id="resUploadProgress" style="display:none;font-size:0.82rem;color:var(--text-muted);margin-top:8px;"></div>
+        <button class="btn-save" onclick="uploadResource()">➕ Add Resource</button>
+        <span class="save-msg" id="resUploadMsg">✓ Added</span>
       </div>
       <div class="card">
         <div class="card-title">📚 Risk Management Resources</div>
@@ -480,7 +484,6 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
-const storage = firebase.storage();
 
 // ========== LOGO ==========
 function mountLogos() {
@@ -1335,13 +1338,6 @@ async function deleteUser(idx) {
 }
 
 // ========== RESOURCES ==========
-function formatBytes(bytes) {
-  if (!bytes) return '';
-  if (bytes < 1024) return bytes + ' B';
-  if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
-  return (bytes/(1024*1024)).toFixed(1) + ' MB';
-}
-
 function renderResources() {
   const isAdmin = currentUser && currentUser.role === 'admin';
   document.getElementById('resourceUploadCard').style.display = isAdmin ? '' : 'none';
@@ -1349,7 +1345,7 @@ function renderResources() {
   const tbody = document.getElementById('resourcesBody');
   tbody.innerHTML = '';
   if (!resourcesCache.length) {
-    tbody.innerHTML = `<tr><td colspan="6" class="no-data-msg">No resources have been uploaded yet.${isAdmin ? ' Use the form above to share guidelines, SOPs and templates with countries.' : ''}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" class="no-data-msg">No resources have been added yet.${isAdmin ? ' Use the form above to share guidelines, SOPs and templates with countries.' : ''}</td></tr>`;
     return;
   }
   resourcesCache.forEach(r => {
@@ -1360,7 +1356,7 @@ function renderResources() {
       <td style="font-weight:600;font-size:0.85rem">${r.title || r.fileName || ''}</td>
       <td style="font-size:0.82rem;line-height:1.5;max-width:320px">${r.description || ''}</td>
       <td style="font-size:0.78rem;color:var(--text-muted);white-space:nowrap">${uploadedDate}${r.uploadedBy ? `<br>by ${r.uploadedBy}` : ''}</td>
-      <td style="font-size:0.8rem;white-space:nowrap"><a href="${r.fileUrl}" target="_blank" rel="noopener">⬇ ${r.fileName || 'Download'}</a>${r.fileSize ? `<br><span style="color:var(--text-muted);font-size:0.72rem">${formatBytes(r.fileSize)}</span>` : ''}</td>
+      <td style="font-size:0.8rem;white-space:nowrap"><a href="${r.fileUrl}" target="_blank" rel="noopener">⬇ ${r.fileName || 'Download'}</a></td>
       <td>${isAdmin ? `<button class="btn-sm btn-outline" style="background:var(--high);color:white;border-color:var(--high)" onclick="deleteResource('${r.id}')">Delete</button>` : ''}</td>`;
     tbody.appendChild(tr);
   });
@@ -1370,65 +1366,44 @@ async function uploadResource() {
   const title       = document.getElementById('resTitle').value.trim();
   const category    = document.getElementById('resCategory').value;
   const description = document.getElementById('resDescription').value.trim();
-  const fileInput   = document.getElementById('resFile');
-  const file        = fileInput.files[0];
-  const progressEl  = document.getElementById('resUploadProgress');
+  const fileUrl     = document.getElementById('resUrl').value.trim();
+  const fileName    = document.getElementById('resFileName').value.trim();
   const msgEl       = document.getElementById('resUploadMsg');
 
-  if (!title) { alert('Please enter a title for this resource.'); return; }
-  if (!file)  { alert('Please choose a file to upload.'); return; }
+  if (!title)   { alert('Please enter a title for this resource.'); return; }
+  if (!fileUrl) { alert('Please paste a link to the file (upload it to the GitHub repo first).'); return; }
 
-  const storagePath = `resources/${Date.now()}_${file.name}`;
-  const ref = storage.ref(storagePath);
-  progressEl.style.display = 'block';
-  progressEl.textContent = 'Uploading 0%…';
+  const docData = {
+    title, category, description, fileUrl,
+    fileName: fileName || fileUrl.split('/').pop(),
+    uploadedBy: currentUser.username,
+    uploadedAt: new Date().toISOString()
+  };
 
   try {
-    const task = ref.put(file);
-    await new Promise((resolve, reject) => {
-      task.on('state_changed',
-        snap => { progressEl.textContent = `Uploading ${Math.round((snap.bytesTransferred/snap.totalBytes)*100)}%…`; },
-        reject,
-        resolve);
-    });
-    const fileUrl = await task.snapshot.ref.getDownloadURL();
-
-    const docData = {
-      title, category, description,
-      fileName: file.name,
-      fileSize: file.size,
-      fileUrl, storagePath,
-      uploadedBy: currentUser.username,
-      uploadedAt: new Date().toISOString()
-    };
     const docRef = await db.collection('resources').add(docData);
     resourcesCache.unshift({ id: docRef.id, ...docData });
 
     document.getElementById('resTitle').value = '';
     document.getElementById('resDescription').value = '';
-    fileInput.value = '';
-    progressEl.style.display = 'none';
+    document.getElementById('resUrl').value = '';
+    document.getElementById('resFileName').value = '';
     msgEl.style.display = 'inline';
     setTimeout(() => { msgEl.style.display = 'none'; }, 2500);
     renderResources();
   } catch(err) {
-    progressEl.style.display = 'none';
-    alert('Upload failed: ' + err.message);
+    alert('Could not save this resource: ' + err.message);
   }
 }
 
 async function deleteResource(id) {
-  if (!confirm('Delete this resource? This cannot be undone.')) return;
-  const res = resourcesCache.find(r => r.id === id);
+  if (!confirm('Remove this resource from the list? (This only removes the entry — if the file is in the GitHub repo, delete it there separately if needed.)')) return;
   try {
-    if (res && res.storagePath) {
-      await storage.ref(res.storagePath).delete().catch(() => {}); // ignore if file already missing
-    }
     await db.collection('resources').doc(id).delete();
     resourcesCache = resourcesCache.filter(r => r.id !== id);
     renderResources();
   } catch(err) {
-    alert('Could not delete this resource: ' + err.message);
+    alert('Could not remove this resource: ' + err.message);
   }
 }
 
