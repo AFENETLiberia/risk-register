@@ -261,6 +261,7 @@
           <label>Region</label>
           <select id="dashRegion" onchange="filterChanged()">
             <option value="">All Regions</option>
+            <option>AFENET HQ</option>
             <option>Central Africa &amp; Indian Ocean</option>
             <option>Eastern Africa</option>
             <option>Southern and Lusophone Africa</option>
@@ -305,6 +306,7 @@
           <label>Region</label>
           <select id="hmRegion" onchange="renderHeatmap()">
             <option value="">All Regions</option>
+            <option>AFENET HQ</option>
             <option>Central Africa &amp; Indian Ocean</option>
             <option>Eastern Africa</option>
             <option>Southern and Lusophone Africa</option>
@@ -337,8 +339,10 @@
           <label>Quarter</label>
           <select id="entryQuarter" onchange="loadEntryForm()">
             <option>Q1 2025</option><option>Q2 2025</option><option>Q3 2025</option>
-            <option>Q4 2025</option><option selected>Q1 2026</option><option>Q2 2026</option>
+            <option>Q4 2025</option><option>Q1 2026</option><option>Q2 2026</option>
             <option>Q3 2026</option><option>Q4 2026</option>
+            <option>Q1 2027</option><option>Q2 2027</option><option>Q3 2027</option><option>Q4 2027</option>
+            <option>Q1 2028</option><option>Q2 2028</option><option>Q3 2028</option><option selected>Q4 2028</option>
           </select>
         </div>
       </div>
@@ -361,7 +365,7 @@
         <div class="card-title" id="registerTitle">📋 Risk Register</div>
         <div class="table-wrap">
           <table class="risk-table">
-            <thead><tr><th>Category</th><th>Risk Description</th><th>Likelihood</th><th>Impact</th><th>Risk Rating</th><th>Direction</th><th>Risk Treatment Plan(s)</th><th>KPI</th><th>Comments</th><th>Risk Owner</th><th>Unit</th><th>Balanced Scorecard</th></tr></thead>
+            <thead><tr><th>Category</th><th>Risk Description</th><th>Likelihood</th><th>Impact</th><th>Risk Rating</th><th>Direction</th><th>Risk Treatment Plan(s)</th><th>KPI</th><th>Comments</th><th>Risk Owner</th><th>Unit</th><th>Balanced Scorecard</th><th>Evidence Link</th></tr></thead>
             <tbody id="registerBody"></tbody>
           </table>
         </div>
@@ -505,13 +509,35 @@ mountLogos();
 
 // ========== REFERENCE DATA ==========
 const COUNTRIES = [
+  // AFENET HQ Units
+  {country:"HQ - Business Development & Grants Management", region:"AFENET HQ"},
+  {country:"HQ - Communication", region:"AFENET HQ"},
+  {country:"HQ - Finance", region:"AFENET HQ"},
+  {country:"HQ - Internal Audit & Risk Management", region:"AFENET HQ"},
+  {country:"HQ - Operations - Admin", region:"AFENET HQ"},
+  {country:"HQ - Operations - Asset Management", region:"AFENET HQ"},
+  {country:"HQ - Operations - Fleet Management", region:"AFENET HQ"},
+  {country:"HQ - Operations - HR", region:"AFENET HQ"},
+  {country:"HQ - Operations - ICT", region:"AFENET HQ"},
+  {country:"HQ - Operations - Procurement", region:"AFENET HQ"},
+  {country:"HQ - Operations - Security", region:"AFENET HQ"},
+  {country:"HQ - Technical - Cooperative Agreements", region:"AFENET HQ"},
+  {country:"HQ - Technical - FETP", region:"AFENET HQ"},
+  {country:"HQ - Technical - HIV", region:"AFENET HQ"},
+  {country:"HQ - Technical - Immunization", region:"AFENET HQ"},
+  {country:"HQ - Technical - Laboratory", region:"AFENET HQ"},
+  {country:"HQ - Technical - M&E", region:"AFENET HQ"},
+  {country:"HQ - Technical - NCD", region:"AFENET HQ"},
+  {country:"HQ - Technical - NTD", region:"AFENET HQ"},
+  {country:"HQ - Technical - Projects", region:"AFENET HQ"},
+  // Central Africa & Indian Ocean
+  {country:"Burundi", region:"Central Africa & Indian Ocean"},
   {country:"Cameroon", region:"Central Africa & Indian Ocean"},
   {country:"Central African Republic", region:"Central Africa & Indian Ocean"},
   {country:"Chad", region:"Central Africa & Indian Ocean"},
   {country:"Democratic Republic of the Congo", region:"Central Africa & Indian Ocean"},
   {country:"Madagascar", region:"Central Africa & Indian Ocean"},
   {country:"Republic of the Congo", region:"Central Africa & Indian Ocean"},
-  {country:"Burundi", region:"Eastern Africa"},
   {country:"Djibouti", region:"Eastern Africa"},
   {country:"Ethiopia", region:"Eastern Africa"},
   {country:"Kenya", region:"Eastern Africa"},
@@ -546,36 +572,36 @@ const COUNTRIES = [
   {country:"Togo", region:"Western Africa"}
 ];
 
-const RISK_CATEGORIES = ["Funding Risks", "Operational Risks", "Legal & Compliance Risks", "Reputational Risks", "Strategic Risks"];
+const RISK_CATEGORIES = ["Funding Risks", "Legal & Compliance Risks", "Operational Risks", "Reputational Risks", "Strategic Risks"];
 
-const SCORECARD_QUADRANTS = ["Financial", "Customer", "Internal Processes", "Learning, Innovation and Development"];
+const SCORECARD_QUADRANTS = ["Customer", "Financial", "Internal Processes", "Learning, Innovation and Development"];
 
 const UNITS = [
-  "Finance",
-  "Internal Audit & Risk Management",
-  "Operations - Admin",
-  "Operations - Procurement",
-  "Operations - HR",
-  "Operations - Fleet Management",
-  "Operations - Asset Management",
-  "Operations - ICT",
-  "Operations - Security",
-  "Technical - Laboratory",
-  "Technical - FETP (Advanced)",
-  "Technical - FETP (Intermediate)",
-  "Technical - FETP (Frontline)",
-  "Technical - Immunization",
-  "Technical - NTD",
-  "Technical - NCD",
-  "Technical - HIV",
-  "Technical - M&E",
-  "Business Development & Grants Management",
-  "Communication",
-  "JIEPH",
   "ACoDD",
   "AFENET Conference",
+  "Business Development & Grants Management",
+  "Communication",
+  "Finance",
+  "Governance",
+  "Internal Audit & Risk Management",
+  "JIEPH",
+  "Operations - Admin",
+  "Operations - Asset Management",
+  "Operations - Fleet Management",
+  "Operations - HR",
+  "Operations - ICT",
+  "Operations - Procurement",
+  "Operations - Security",
   "Regional & Country Conferences",
-  "Governance"
+  "Technical - FETP (Advanced)",
+  "Technical - FETP (Frontline)",
+  "Technical - FETP (Intermediate)",
+  "Technical - HIV",
+  "Technical - Immunization",
+  "Technical - Laboratory",
+  "Technical - M&E",
+  "Technical - NCD",
+  "Technical - NTD"
 ];
 
 const LI_LABELS = { L: "Low", M: "Medium", H: "High" };
@@ -802,7 +828,7 @@ function populateDropdowns() {
 }
 
 function getAvailableQuarters() {
-  const quarters = new Set(['Q1 2025','Q2 2025','Q3 2025','Q4 2025','Q1 2026','Q2 2026','Q3 2026','Q4 2026']);
+  const quarters = new Set(['Q1 2025','Q2 2025','Q3 2025','Q4 2025','Q1 2026','Q2 2026','Q3 2026','Q4 2026','Q1 2027','Q2 2027','Q3 2027','Q4 2027','Q1 2028','Q2 2028','Q3 2028','Q4 2028']);
   Object.keys(riskDataCache).forEach(k => { const q = k.split('::')[1]; if(q) quarters.add(q); });
   return Array.from(quarters).sort((a,b) => quarterOrder(a) - quarterOrder(b));
 }
@@ -859,6 +885,36 @@ function calcDirection(prevRating, currRating) {
   return '↔';
 }
 function directionClass(dir) { return dir === '↑' ? 'up' : dir === '↓' ? 'down' : 'same'; }
+
+// ========== QUARTER LOCK ==========
+function getQuarterLockDate(quarter) {
+  const m = /^Q([1-4])\s+(\d{4})$/.exec((quarter||'').trim());
+  if (!m) return null;
+  const q = parseInt(m[1]), year = parseInt(m[2]);
+  const endDates = [[3,31],[6,30],[9,30],[12,31]]; // [month, day] for Q1-Q4
+  const [month, day] = endDates[q-1];
+  const endDate = new Date(year, month-1, day);
+  const lockDate = new Date(endDate);
+  lockDate.setDate(lockDate.getDate() + 14); // 2 weeks after quarter end
+  return lockDate;
+}
+function isQuarterLocked(quarter) {
+  const lock = getQuarterLockDate(quarter);
+  if (!lock) return false;
+  return new Date() > lock;
+}
+
+// ========== PREVIOUS QUARTER FULL DATA ==========
+function getPreviousQuarterData(country, riskId, quarter) {
+  const targetOrder = quarterOrder(quarter);
+  const candidates = Object.keys(riskDataCache)
+    .filter(k => k.startsWith(country + '::'))
+    .map(k => ({ q: k.split('::')[1], data: riskDataCache[k] }))
+    .filter(x => quarterOrder(x.q) < targetOrder && x.data && x.data[riskId])
+    .sort((a,b) => quarterOrder(b.q) - quarterOrder(a.q));
+  if (!candidates.length) return null;
+  return { ...candidates[0].data[riskId], _fromQuarter: candidates[0].q };
+}
 
 // ========== DASHBOARD ==========
 function filterChanged() {
@@ -1014,9 +1070,14 @@ function renderHeatmap() {
       const scores = relevant.map(r => entry[r.id]).filter(d=>d&&d.R).map(d=>({L:1,M:2,H:3}[d.R]||0));
       let rating = null;
       if (scores.length) { const avg=scores.reduce((a,b)=>a+b,0)/scores.length; rating = avg>=2.5?'H':avg>=1.5?'M':'L'; }
+      // Submission status: submitted if at least one risk has been rated
+      const hasSubmitted = risks.length > 0 && risks.some(r => entry[r.id] && entry[r.id].R);
+      const submColor = hasSubmitted ? '#27ae60' : '#e74c3c';
+      const submLabel = hasSubmitted ? '✓ Submitted' : '✗ Not Submitted';
       const cell = document.createElement('div');
       cell.className = `heatmap-cell cell-${rating||'na'}`;
-      cell.innerHTML = `<div class="country-name">${country}</div><div class="risk-score">${rating||'—'}</div><div class="risk-label">${rating==='H'?'HIGH':rating==='M'?'MEDIUM':rating==='L'?'LOW':'No data'}</div>`;
+      cell.style.borderTop = `4px solid ${submColor}`;
+      cell.innerHTML = `<div style="font-size:0.67rem;font-weight:700;color:${submColor};margin-bottom:3px">${submLabel}</div><div class="country-name">${country}</div><div class="risk-score">${rating||'—'}</div><div class="risk-label">${rating==='H'?'HIGH':rating==='M'?'MEDIUM':rating==='L'?'LOW':'No data'}</div>`;
       cell.onclick = () => showCountryModal(country, quarter);
       grid.appendChild(cell);
     });
@@ -1052,8 +1113,10 @@ function loadEntryForm() {
   const area    = document.getElementById('entryFormArea');
   if (!country) { area.innerHTML = `<div class="no-data-msg"><p>👆 Please select a country above to manage its risk register and enter ratings.</p></div>`; return; }
 
-  const canEdit = currentUser && (currentUser.role === 'admin' || (currentUser.role === 'country' && (!currentUser.country || currentUser.country === country)));
   const quarter = document.getElementById('entryQuarter').value;
+  const locked = isQuarterLocked(quarter);
+  const isAdminUser = currentUser && currentUser.role === 'admin';
+  const canEdit = currentUser && (isAdminUser || (!locked && currentUser.role === 'country' && (!currentUser.country || currentUser.country === country)));
   const risks   = loadCountryRisks(country);
   const entry   = riskDataCache[getEntryKey(country, quarter)] || {};
 
@@ -1085,6 +1148,10 @@ function loadEntryForm() {
   } else {
     risks.forEach(r => {
       const sv = entry[r.id] || {};
+      // Pre-fill from previous quarter if current quarter not yet saved
+      const prevQData = (!sv.L && !sv.I) ? getPreviousQuarterData(country, r.id, quarter) : null;
+      const pf = prevQData || sv; // pf = values to show in form
+      const prefillNote = prevQData ? ` <span style="font-size:0.71rem;color:var(--accent);font-weight:600">(from ${prevQData._fromQuarter})</span>` : '';
       const currR = sv.R || null;
       const prevR = getPreviousRating(country, r.id, quarter);
       const liveDirection = sv.L && sv.I ? calcDirection(prevR, calcRating(sv.L, sv.I)) : (sv.direction || '↔');
@@ -1108,21 +1175,21 @@ function loadEntryForm() {
           </div>
           <div class="entry-grid">
             <div class="input-group">
-              <label>Likelihood</label>
+              <label>Likelihood${prefillNote}</label>
               <select id="li_${r.id}" onchange="previewCalc(${r.id}, '${country}')" ${!canEdit?'disabled':''}>
                 <option value="">— Select —</option>
-                <option value="L" ${sv.L==='L'?'selected':''}>Low</option>
-                <option value="M" ${sv.L==='M'?'selected':''}>Medium</option>
-                <option value="H" ${sv.L==='H'?'selected':''}>High</option>
+                <option value="L" ${pf.L==='L'?'selected':''}>Low</option>
+                <option value="M" ${pf.L==='M'?'selected':''}>Medium</option>
+                <option value="H" ${pf.L==='H'?'selected':''}>High</option>
               </select>
             </div>
             <div class="input-group">
               <label>Impact</label>
               <select id="im_${r.id}" onchange="previewCalc(${r.id}, '${country}')" ${!canEdit?'disabled':''}>
                 <option value="">— Select —</option>
-                <option value="L" ${sv.I==='L'?'selected':''}>Low</option>
-                <option value="M" ${sv.I==='M'?'selected':''}>Medium</option>
-                <option value="H" ${sv.I==='H'?'selected':''}>High</option>
+                <option value="L" ${pf.I==='L'?'selected':''}>Low</option>
+                <option value="M" ${pf.I==='M'?'selected':''}>Medium</option>
+                <option value="H" ${pf.I==='H'?'selected':''}>High</option>
               </select>
             </div>
           </div>
@@ -1130,13 +1197,14 @@ function loadEntryForm() {
             Risk Rating: <span id="cr_${r.id}" class="badge badge-${currR||'na'}">${currR||'—'}</span>
             &nbsp;Direction (vs previous quarter): <span id="cd_${r.id}" class="direction ${directionClass(liveDirection)}">${liveDirection}</span>
           </div>
-          <div class="input-group" style="margin-bottom:10px"><label>Risk Treatment Plan(s) — should address the cause</label><textarea id="tp_${r.id}" rows="3" placeholder="Narrative treatment plan…" ${!canEdit?'disabled':''}>${sv.treatment||''}</textarea></div>
-          <div class="input-group" style="margin-bottom:10px"><label>KPI — evidence for movement in the risk rating</label><textarea id="kpi_${r.id}" rows="3" placeholder="Narrative KPI(s)…" ${!canEdit?'disabled':''}>${sv.kpi||''}</textarea></div>
-          <div class="input-group" style="margin-bottom:10px"><label>Comments — controls / drivers of the rating movement</label><textarea id="cm_${r.id}" rows="2" placeholder="Narrative comments…" ${!canEdit?'disabled':''}>${sv.comments||''}</textarea></div>
-          <div class="input-group" style="margin-bottom:10px"><label>Resources / Links (optional)</label><textarea id="res_${r.id}" rows="2" placeholder="Supporting documents, links, evidence…" ${!canEdit?'disabled':''}>${sv.resources||''}</textarea></div>
+          <div class="input-group" style="margin-bottom:10px"><label>Risk Treatment Plan(s) — should address the cause</label><textarea id="tp_${r.id}" rows="3" placeholder="Narrative treatment plan…" ${!canEdit?'disabled':''}>${pf.treatment||''}</textarea></div>
+          <div class="input-group" style="margin-bottom:10px"><label>KPI — evidence for movement in the risk rating</label><textarea id="kpi_${r.id}" rows="3" placeholder="Narrative KPI(s)…" ${!canEdit?'disabled':''}>${pf.kpi||''}</textarea></div>
+          <div class="input-group" style="margin-bottom:10px"><label>Comments — controls / drivers of the rating movement</label><textarea id="cm_${r.id}" rows="2" placeholder="Narrative comments…" ${!canEdit?'disabled':''}>${pf.comments||''}</textarea></div>
+          <div class="input-group" style="margin-bottom:10px"><label>Resources / Links (optional)</label><textarea id="res_${r.id}" rows="2" placeholder="Supporting documents, links, evidence…" ${!canEdit?'disabled':''}>${pf.resources||''}</textarea></div>
+          <div class="input-group" style="margin-bottom:10px"><label>🔗 Evidence Link (SharePoint / OneDrive URL)</label><input type="url" id="ev_${r.id}" placeholder="https://..." ${!canEdit?'disabled':''} value="${pf.evidenceLink||''}" /></div>
           ${canEdit?`<button class="btn-save" onclick="saveRiskRating(${r.id}, '${country}')">💾 Save Rating</button>
           <button class="btn-danger" style="margin-left:8px" onclick="deleteRisk(${r.id}, '${country}')">🗑 Remove Risk</button>
-          <span class="save-msg" id="sm_${r.id}">✓ Saved</span>`:''}
+          <span class="save-msg" id="sm_${r.id}">✓ Saved</span>`:locked && !isAdminUser?`<p style="color:var(--text-muted);font-size:0.82rem;margin-top:8px">🔒 This quarter is locked for editing (2 weeks after quarter end).</p>`:'<p style="color:var(--high);font-size:0.85rem;">⚠️ You do not have permission to edit data for this country.</p>'}
         </div>
       </div>`;
     });
@@ -1234,6 +1302,7 @@ async function saveRiskRating(riskId, country) {
     kpi: document.getElementById(`kpi_${riskId}`).value,
     comments: document.getElementById(`cm_${riskId}`).value,
     resources: document.getElementById(`res_${riskId}`).value,
+    evidenceLink: (document.getElementById(`ev_${riskId}`) || {}).value || '',
     updatedBy: currentUser.username,
     updatedAt: new Date().toISOString()
   };
@@ -1260,7 +1329,7 @@ function renderRegister() {
 
   if (!country) {
     title.textContent = '📋 Risk Register';
-    tbody.innerHTML = `<tr><td colspan="12" class="no-data-msg">Select a country to view its risk register.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="13" class="no-data-msg">Select a country to view its risk register.</td></tr>`;
     return;
   }
 
@@ -1269,7 +1338,7 @@ function renderRegister() {
   title.textContent = `📋 ${country} — Risk Register (${quarter==='latest'?'Latest Entry':quarter})`;
 
   if (!risks.length) {
-    tbody.innerHTML = `<tr><td colspan="12" class="no-data-msg">No risks registered for ${country} yet. Add risks via the Data Entry tab.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="13" class="no-data-msg">No risks registered for ${country} yet. Add risks via the Data Entry tab.</td></tr>`;
     return;
   }
 
@@ -1288,7 +1357,8 @@ function renderRegister() {
       <td style="font-size:0.79rem;line-height:1.5;white-space:pre-line;max-width:180px">${d.comments||''}</td>
       <td style="font-size:0.8rem">${r.owner||''}</td>
       <td style="font-size:0.8rem">${r.unit||''}</td>
-      <td style="font-size:0.8rem">${r.scorecard||''}</td>`;
+      <td style="font-size:0.8rem">${r.scorecard||''}</td>
+      <td style="font-size:0.8rem">${d.evidenceLink?`<a href="${d.evidenceLink}" target="_blank" rel="noopener" title="${d.evidenceLink}">🔗 View</a>`:''}</td>`;
     tbody.appendChild(tr);
   });
 }
@@ -1417,7 +1487,7 @@ function exportData() {
 }
 
 function exportCSV() {
-  const rows = [['Country','Region','Risk Category','Risk Description','Quarter','Likelihood','Impact','Risk Rating','Direction','Risk Treatment Plan(s)','KPI','Comments','Resources/Links','Risk Owner','Unit','Balanced Scorecard','Updated By','Updated At']];
+  const rows = [['Country','Region','Risk Category','Risk Description','Quarter','Likelihood','Impact','Risk Rating','Direction','Risk Treatment Plan(s)','KPI','Comments','Resources/Links','Evidence Link','Risk Owner','Unit','Balanced Scorecard','Updated By','Updated At']];
   Object.keys(countryRisksCache).forEach(country => {
     const cData = COUNTRIES.find(c => c.country === country);
     const risks = countryRisksCache[country] || [];
@@ -1430,7 +1500,7 @@ function exportCSV() {
           const quarter = k.split('::')[1];
           const d = riskDataCache[k][r.id];
           if (!d) return;
-          rows.push([country, cData?cData.region:'', r.category, buildRiskDescription(r), quarter, LI_LABELS[d.L]||'', LI_LABELS[d.I]||'', d.R||'', d.direction||'', d.treatment||'', d.kpi||'', d.comments||'', d.resources||'', r.owner||'', r.unit||'', r.scorecard||'', d.updatedBy||'', d.updatedAt||'']);
+          rows.push([country, cData?cData.region:'', r.category, buildRiskDescription(r), quarter, LI_LABELS[d.L]||'', LI_LABELS[d.I]||'', d.R||'', d.direction||'', d.treatment||'', d.kpi||'', d.comments||'', d.resources||'', d.evidenceLink||'', r.owner||'', r.unit||'', r.scorecard||'', d.updatedBy||'', d.updatedAt||'']);
         });
       }
     });
